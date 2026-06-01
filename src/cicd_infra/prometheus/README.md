@@ -384,29 +384,32 @@ PrometheusWebUIならびにGrafanaはPrometheusに格納された時系列情報
 
 始める前に、ハンズオンで使ったコンテナを`docker stop`で止めておいてください。また、`docker ps`で余計なコンテナがないかを確認してください。(理由があって何かしらのコンテナを立てている場合はポートが被らないように適宜読み替えてください)
 
-構成は以下になります。`compose.yaml`という名前でymlファイルを作り以下を書き込んでください。
-```
-version: '3'
+構成は以下になります。`compose.yaml`という名前でyamlファイルを作り以下を書き込んでください。
+```yaml
 services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus:/etc/prometheus
+      - type: bind
+        source: "./prometheus"
+        target: "/etc/prometheus"
+        bind:
+          create_host_path: false
     command: "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
     restart: always
 
   grafana:
-    image: grafana/grafana:7.5.7
+    image: grafana/grafana:main-distroless-slim
     container_name: grafana
     ports:
       - 3000:3000
     restart: always
 
   wordpress_1:
-    image: wordpress:php8.0-apache
+    image: wordpress:php8.5-apache
     container_name: wordpress_1
     ports:
       - 8080:80
@@ -417,15 +420,15 @@ services:
 ![default](./images/handson_default.png)
 
 次にPrometheusの設定ファイルを作ります。`compose.yaml`と同じディレクトリ内にファイルを格納するディレクトリを作り、中に設定ファイルを入れます。
-```
-# mkdir prometheus
-# cd prometheus
-# vim prometheus.yml
+```sh
+ $ mkdir prometheus
+ $ cd prometheus
+ $ vim prometheus.yml
 ```
 設定ファイルは以下の内容になります。
 - global：全体の設定
 - scrape_config：監視ターゲットに関する設定
-```
+```yaml
 global:
   scrape_interval: 15s
 
@@ -436,7 +439,10 @@ scrape_configs:
       - targets:
         - 'wordpress_1:9100'
 ```
-次に監視対象のサーバに入れるエージェント(exporter)を入れます。まずはパフォーマンス監視を行いたいので、公式が出しているexporter「Node exporter」を`compose.yaml`が入っているディレクトリと同じ階層に用意します。
+次に監視対象のサーバに入れるエージェント(exporter)を入れます。まずはパフォーマンス監視を行いたいので、公式が出しているexporter[「Node exporter」](https://github.com/prometheus/node_exporter)を`compose.yaml`が入っているディレクトリと同じ階層に用意します。
+```sh
+$ cd ../
+$ curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.11.1/node_exporter-1.11.1.linux-amd64.tar.gz
 ```
 # cd ..
 # wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
@@ -444,19 +450,22 @@ scrape_configs:
 次に`compose.override.yml`を作り、wordpressサーバの上でNode exporterを起動させるようにします。
 > 今回はwordpress_1コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
 > 今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
-```
-version: '3'
+```yaml
 services:
   wordpress_1:
     ports:
       - 9100:9100
     volumes:
-      - ./node_exporter-1.1.2.linux-amd64.tar.gz:/root/node_exporter-1.1.2.linux-amd64.tar.gz
+      - type: bind
+        source: "./node_exporter-1.11.1.linux-amd64.tar.gz"
+        target: "/root/node_exporter-1.11.1.linux-amd64.tar.gz"
+        bind:
+          create_host_path: false
     working_dir: /root
     command: >
       bash -c "service apache2 start &&
-      tar xvfz node_exporter-1.1.2.linux-amd64.tar.gz &&
-      cd node_exporter-1.1.2.linux-amd64 &&
+      tar xvfz node_exporter-1.11.1.linux-amd64.tar.gz &&
+      cd node_exporter-1.11.1.linux-amd64 &&
       ./node_exporter"
 ```
 これで一通りの準備は完了しました。`docker compose -f compose.yaml up -d`で`compose.yaml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
