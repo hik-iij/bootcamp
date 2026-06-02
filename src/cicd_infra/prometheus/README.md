@@ -497,24 +497,52 @@ services:
 
 #### STEP2: Grafanaを用いたダッシュボードの作成
 
+次に Grafanaを使って、ナウでヤングな可視化を行います。
+`http://<dockerホストのIP:3000>`にアクセスします。
+ID/Passwordは`admin`/`admin`を入力してください。
+
 ![grafana](./images/grafana.png)
 
-次にPrometheusサーバの場所を設定し、Grafanaにデータを読み込ませます。`Configuration`(左の歯車マーク)から`data source`を選択し、`add data sorce`からPrometheusを選択。
+次にPrometheusサーバの場所を設定し、Grafanaにデータを読み込ませます。`Connections`(左のリンクっぽいマーク)から`Data sources`を選択し、`add data sorce`からPrometheusを選択します。
 
 ![datasource](./images/datasource.png)
 
-URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にます。AccessはPrometheusへの接続元を選択します。ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバを選択してください。docker network上でGrafanaサーバからPrometheusサーバは`http://prometheus:9090`でアクセスできるため、今回は表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。
+URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にします。
+AccessはPrometheusへの接続元を選択します。
+GrafanaサーバとPrometheusサーバはdocker network上で接続しており、GrafanaサーバからPrometheusサーバへは`http://prometheus:9090`でアクセスできます。
+ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバ(例:`http://localhost:9090`)を選択してください。
+最後に一番下の`save & test`でエラーが出なければOKです。
 
 ![access](./images/access.svg)
 
-次にダッシュボードを作っていきます。`Create`タブから`NewDashboard`を選択、`Add Panel`から知りたいメトリックスを選択します。とりあえずロードアベレージ(実行待ちタスクの平均)を1分間、5分間、15分間ので表示させます。`Metrics`から`node_load1`を選択。`+Query`をでクエリを追加し`node_load5`を選択。同様に`+ Query`でクエリを追加し`node_load15`を選択。右側の`Panel`から`Panel title`を編集し、最後に右上のApplyを押すことで、パネルに追加できます。
+
+次にダッシュボードを作っていきます。
+例として、ロードアベレージ(実行待ちタスクの平均)を1分間、5分間、15分間のグラフを表示させるダッシュボードを作ります。
+
+まずは、右上の`Create`ボタンから`New dashboard`を選択、`Add Panel`でパネルを作成します。
+パネルのTitleを `Load Average` とし、Title上部の`Edit visualization`ボタンをクリックします。
+
+![add_panel](./images/grafana_add_panel.png)
+
+次に表示させたいメトリックスを選択します。
+
+`Metric`の`Select metric`から`node_load1`を選択。`+ Add query`をでクエリを追加し`node_load5`を選択。同様に`+ Add query`でクエリを追加し`node_load15`を選択します。
+`Run queries`ボタンを押すとメトリックスの描画が行われます。
+
+メトリックスが表示されたら、最後に右上のSaveボタンを押してダッシュボードを保存します。
+ダッシュボードの`Title`を`Load Average Dashboard`とし、Saveボタンを押して保存を確定します。
 
 ![load_average](./images/load_ave.png)
 
 これの繰り返しで自分だけのダッシュボードを作り上げていく形になります。
 
-最後に、Grafanaの公式では、有志の手によってダッシュボードのテンプレートがいくつか用意されているので、今度はお手軽にいい感じのダッシュボードを作ります。まず[Grafana lab](https://grafana.com/grafana/dashboards)にアクセスして、[Node Exporter Quickstart and Dashboard](https://grafana.com/grafana/dashboards/13978?pg=dashboards&plcmt=featured-sub1)を選びます。ここにあるDashboardIDまたは生JSONファイルをメモし、Grafanaにインポートすることで、有志の作ったダッシュボードと同じ形式のダッシュボードを手元で開くことが出来ます。
+最後に、Grafanaの公式では、有志の手によってダッシュボードのテンプレートがいくつか用意されているので、今度はお手軽にいい感じのダッシュボードを作ります。
+まず[Grafana lab](https://grafana.com/grafana/dashboards)にアクセスして、[Node Exporter Quickstart and Dashboard](https://grafana.com/grafana/dashboards/13978?pg=dashboards&plcmt=featured-sub1)を選びます。
+ここにあるDashboardIDまたは生JSONファイルをクリップボードにコピーし、Grafanaにインポートすることで、有志の作ったダッシュボードと同じ形式のダッシュボードを手元で開くことが出来ます。
 
+![import_dashboard](./images/grafana_dashboard_import.png)
+
+![template](./images/node_exporter_quicstart.png)
 
 #### STEP3: blackbox_exporterを用いた外部監視
 
