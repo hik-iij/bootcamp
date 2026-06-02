@@ -446,10 +446,7 @@ scrape_configs:
 $ cd ../
 $ curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.11.1/node_exporter-1.11.1.linux-amd64.tar.gz
 ```
-# cd ..
-# wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
-```
-次に`compose.override.yml`を作り、wordpressサーバの上でNode exporterを起動させるようにします。
+次に`compose.override.yaml`を作り、WordPressサーバの上でNode exporterを起動させるようにします。
 > 今回はwordpress_1コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
 > 今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
 ```yaml
@@ -472,7 +469,7 @@ services:
 ```
 これで一通りの準備は完了しました。`docker compose -f compose.yaml up -d`で`compose.yaml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
 
-コンテナの立ち上げが完了したら、ブラウザから`http://<dockerホストのIP:8080>`でwordpressのサイトが表示させることを確認してください。(DBに接続していないので先に進めないのは仕様です)
+コンテナの立ち上げが完了したら、ブラウザから`http://<dockerホストのIP:8080>`でWordPressのサイトが表示させることを確認してください。(WordPressがDBに接続していないので先に進めないのは仕様です)
 
 ![wordpress](./images/wordpress.png)
 
@@ -488,8 +485,8 @@ services:
 
 ホーム画面からは好きなメトリックスを表示することが出来ます。試しに`node_memory_Active_bytes`を選択すれば、メモリの使用量が表示されます。時間がある方はプルダウンからどんな情報がとれるか見てみましょう。
 - 例
-  - up：監視ターゲット一覧
-  - go_memstats_alloc_requests_total：Prometheusが利用しているメモリ使用量
+  - `up`: 監視ターゲット一覧
+  - `go_memstats_alloc_bytes`: Prometheusが利用しているメモリ使用量
 
 
 ![mem_metrics](./images/mem_metrics.png)
@@ -610,7 +607,7 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox_exporter:9115
 ```
-`relabel_configs`の箇所ではblackbox_exporter自身のラベルを監視対象のラベルに置き換えてます。これをしないとPrometheusに収集されるデータがwordpressに関するものではなく、blackbox_exporterのものだと判断されてしまいます。
+`relabel_configs`の箇所ではblackbox_exporter自身のラベルを監視対象のラベルに置き換えてます。これをしないとPrometheusに収集されるデータがWordPressに関するものではなく、blackbox_exporterのものだと判断されてしまいます。
 
 これで準備は完了です。`docker compose up -d`でblackbox_exporterを起動させたのち、`docker compose restart prometheus`でprometheusのコンフィグファイルを再読み込みしてください。`localhost:9090`でPrometheusサーバにアクセスし、StatusからTargetを表示し、blackboxが存在すれば成功です。
 
@@ -645,7 +642,7 @@ scrape_configs:
 
 ![http_status](./images/http_status.png)
 
-試しにwordpressの中身を書き換えてみましょう。
+試しにWordPressの中身を書き換えてみましょう。
 ```
 # docker exec -it wordpress_1 mv /var/www/html/wp-admin /var/www/html/wp-admins
 ```
