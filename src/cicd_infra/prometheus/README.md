@@ -440,6 +440,12 @@ scrape_configs:
     static_configs:
       - targets:
         - 'wordpress_1:9100'
+
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+         - 'localhost:9090'
 ```
 次に監視対象のサーバに入れるエージェント(exporter)を入れます。まずはパフォーマンス監視を行いたいので、公式が出しているexporter[「Node exporter」](https://github.com/prometheus/node_exporter)を`compose.yaml`が入っているディレクトリと同じ階層に用意します。
 ```sh
