@@ -122,7 +122,7 @@ wordpress:php8.5-apache   80be1f0a8e4f       1.12GB          283MB
 ```sh
  $ docker run -d --name monitoring_bootcamp -p 8080:80 wordpress:php8.5-apache 
 ```
-最後に`docker ps`でwordpressが立ち上がって、Webページにアクセス出来ていればSTEP1は完了です。
+最後に`docker ps`でWordPressが立ち上がって、Webページにアクセス出来ていればSTEP1は完了です。
 ```sh
  $ docker ps
 CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS          PORTS                                     NAMES
