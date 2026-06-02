@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
 title: Prometheusでアプリケーションを監視してみよう
 description: 監視の基礎を学び、簡単な監視システム構築を体験する
 time: 2h
