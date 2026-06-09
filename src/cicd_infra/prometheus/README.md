@@ -513,14 +513,9 @@ ID/Passwordは`admin`/`admin`を入力してください。
 
 ![datasource](./images/datasource.png)
 
-URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にします。
-AccessはPrometheusへの接続元を選択します。
+URLにPrometheusサーバである`http://prometheus:9090`を入力します。
 GrafanaサーバとPrometheusサーバはdocker network上で接続しており、GrafanaサーバからPrometheusサーバへは`http://prometheus:9090`でアクセスできます。
-ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバ(例:`http://localhost:9090`)を選択してください。
 最後に一番下の`save & test`でエラーが出なければOKです。
-
-![access](./images/access.svg)
-
 
 次にダッシュボードを作っていきます。
 例として、ロードアベレージ(実行待ちタスクの平均)を1分間、5分間、15分間のグラフを表示させるダッシュボードを作ります。
