@@ -704,7 +704,21 @@ scrape_configs:
 ```
 `relabel_configs`の箇所ではblackbox_exporter自身のラベルを監視対象のラベルに置き換えてます。これをしないとPrometheusに収集されるデータがWordPressに関するものではなく、blackbox_exporterのものだと判断されてしまいます。
 
-これで準備は完了です。`docker compose up -d`でblackbox_exporterを起動させたのち、`docker compose restart prometheus`でprometheusのコンフィグファイルを再読み込みしてください。`http://<dockerホストのIP:9090>`でPrometheusサーバにアクセスし、StatusからTargetを表示し、blackboxが存在すれば成功です。
+これで準備は完了です。blackbox_exporterを起動します。
+
+💻️ ホストで実行
+```sh
+docker compose up -d
+```
+
+次にprometheusのコンフィグファイルを再読み込みするためprometheusコンテナを再起動させます。
+
+💻️ ホストで実行
+```sh
+docker compose restart prometheus
+```
+
+`http://<dockerホストのIP:9090>`でPrometheusサーバにアクセスし、StatusからTargetを表示し、blackboxが存在すれば成功です。
 
 ![blackbox_exporter](./images/blackbox_exporter.png)
 
