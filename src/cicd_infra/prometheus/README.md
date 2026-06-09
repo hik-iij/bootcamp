@@ -757,7 +757,8 @@ docker compose restart prometheus
 ```sh
 docker exec -it -- wordpress_1 mv /var/www/html/wp-admin /var/www/html/wp-admins
 ```
-を実行すればWebサーバの中身が書き換えられ、HTTPステータスコードが500になり、赤くなるはずです。
+
+Webサーバの中身が書き換えられ、`probe_http_status_code`の値が`500`になり、表示が赤くなるはずです。
 
 ![http_status](./images/http_status_error.png)
 
