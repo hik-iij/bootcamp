@@ -453,8 +453,11 @@ $ cd ../
 $ curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.11.1/node_exporter-1.11.1.linux-amd64.tar.gz
 ```
 次に`compose.override.yaml`を作り、WordPressサーバの上でNode exporterを起動させるようにします。
-> 今回はwordpress_1コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
-> 今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
+
+::: tip
+今回は`wordpress_1`コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
+今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
+:::
 ```yaml
 services:
   wordpress_1:
