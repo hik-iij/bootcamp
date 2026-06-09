@@ -461,9 +461,8 @@ services:
 
 💻️ ホストで実行
 ```sh
- $ mkdir prometheus
- $ cd prometheus
- $ vim prometheus.yml
+ $ mkdir ./prometheus
+vim ./prometheus/prometheus.yml
 ```
 設定ファイルは以下の内容になります。
 - global：全体の設定
@@ -491,8 +490,7 @@ scrape_configs:
 
 💻️ ホストで実行
 ```sh
-$ cd ../
-$ curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.11.1/node_exporter-1.11.1.linux-amd64.tar.gz
+curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.11.1/node_exporter-1.11.1.linux-amd64.tar.gz
 ```
 次に`compose.override.yaml`を作り、WordPressサーバの上でNode exporterを起動させるようにします。
 
