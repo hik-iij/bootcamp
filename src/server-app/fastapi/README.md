@@ -2,7 +2,7 @@
 footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
 title: FastAPIを使ったAPIサーバ作り
 description: PythonのFastAPIパッケージを用いて簡単なAPIサーバを作るハンズオンです
-# time: 2h
+time: 2h
 prior_knowledge: Python, REST API
 ---
 <header-table/>
